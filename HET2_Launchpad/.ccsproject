@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?ccsproject version="1.0"?>
+<projectOptions>
+	<ccsVersion value="9.3.0"/>
+	<deviceVariant value="Cortex M.CC2652R1F"/>
+	<deviceFamily value="TMS470"/>
+	<deviceEndianness value="little"/>
+	<codegenToolVersion value="18.12.5.LTS"/>
+	<isElfFormat value="true"/>
+	<connection value="common/targetdb/connections/TIXDS110_Connection.xml"/>
+	<rts value=""/>
+	<createSlaveProjects value=""/>
+	<ignoreDefaultDeviceSettings value="true"/>
+	<ignoreDefaultCCSSettings value="true"/>
+	<templateProperties value="id=simple_peripheral_app_CC26X2R1_LAUNCHXL_tirtos_ccs.projectspec.simple_peripheral_app_CC26X2R1_LAUNCHXL_tirtos_ccs,type=rtsc,xdcToolsVersion=3_60_02_34_core,target=ti.targets.arm.elf.M4F,platform=ti.platforms.simplelink:CC2642R1F,buildProfile=release,isHybrid=true,configuroOptions= --compileOptions &quot;${COMPILER_FLAGS} &quot;"/>
+	<origin value="C:/Users/tsong/Downloads/ble5_custom_peripheral_CC26X2R1"/>
+	<filesToOpen value=""/>
+</projectOptions>
