@@ -86,7 +86,7 @@ void AD5940AMPStructInit()
   pAMPCfg->NumOfData = -1;                              /* Never stop until you stop it mannually by AppAMPCtrl() function */
 
     pAMPCfg->AmpODR = ECHEM_PERIOD;
-    pAMPCfg->FifoThresh = ECHEM_SAMPLES-1;
+    pAMPCfg->FifoThresh = ECHEM_SAMPLES;
     pAMPCfg->ADCRefVolt = 1.82;                         /* Measure voltage on VREF_1V8 pin and add here */
 
     pAMPCfg->ExtRtia = bFALSE;          /* Set to true if using external Rtia */
@@ -107,7 +107,6 @@ int32_t AMPShowResult(float *pData, uint32_t DataCount)
 {
   for(int i=0;i<DataCount;i++)
   {
-  //Display_printf(dispHandle, SP_ROW_RSSI, 0, "Current:%f uA\n", &pData[i]);
      //printf("mem: %i\n", &pData[i]);
      printf("val: %f\n", pData[i]);
   }

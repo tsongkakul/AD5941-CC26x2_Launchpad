@@ -16,6 +16,7 @@
  *****************************************************************************/
 #include "HET2_CAPH.h"
 
+#define PRINTVALUES
 
 /* This file contains auto generated source code that user defined */
 
@@ -314,7 +315,7 @@ AD5940Err AppCAPHISR(void *pBuff)
             AD5940_SleepKeyCtrlS(SLPKEY_UNLOCK); /* Unlock so sequencer can put AD5940 to sleep */
             AD5940_EnterSleepS();
             /* Process data */
-            //AppCAPHProcess((int32_t*) pBuff, &FifoCnt);
+            AppCAPHProcess((int32_t*) pBuff, &FifoCnt);
         return 0;
     }
 
@@ -351,7 +352,10 @@ float AppCAPHCalcVoltage(uint32_t ADCcode)
                 * kFactor;
         break;
     }
-    //printf("Voltage = %f\n",fVolt);
+
+#ifdef PRINTVALUES
+    printf("Voltage = %f\n",fVolt);
+#endif
     return fVolt;
 }
 
@@ -361,7 +365,9 @@ float AppCAPHCalcCurrent(uint32_t ADCcode)
     fVoltage = AppCAPHCalcVoltage(ADCcode);
     //printf("ADC Code: %i\n", ADCcode);
     fCurrent = fVoltage / AppCAPHCfg.RtiaCalValue.Magnitude;
-    //printf("Current Calc: %f\n", -fCurrent * 1000000);
+#ifdef PRINTVALUES
+    printf("Current Calc: %f\n", -fCurrent * 1000000);
+#endif
     return -fCurrent * 1000000;
 }
 

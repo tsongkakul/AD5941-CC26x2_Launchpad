@@ -191,6 +191,7 @@
 #define APPBUFF_SIZE               1000
 #define n                          2
 #define SAMPLES                    10
+#define DEBUG5941                  1
 /*********************************************************************
  * TYPEDEFS
  */
@@ -690,7 +691,7 @@ static void CustomPeripheral_init(void)
 
         AD5940AMPStructInit();  //Configure your parameters in this function
 
-        ADerror = AppCAPHInit(AppBuff[0], APPBUFF_SIZE);    /* Initialize AMP application. Provide a buffer, which is used to store sequencer commands */
+       ADerror = AppCAPHInit(AppBuff[0], APPBUFF_SIZE);    /* Initialize AMP application. Provide a buffer, which is used to store sequencer commands */
        printf ("AD CFG COMPLETE\n");
 
 
@@ -707,7 +708,7 @@ static void CustomPeripheral_init(void)
         }
         printf("Custom Peripheral Init\n");
 
-        //ADerror = AppCAPHCtrl(CHRONOAMPCTRL_START, 0);
+        ADerror = AppCAPHCtrl(CHRONOAMPCTRL_START, 0);
 
 
 #ifdef PTM_MODE
@@ -2611,35 +2612,9 @@ static void CustomPeripheral_performPeriodicTask(void)
 
 static void CustomPeripheral_INT_CB(PIN_Handle handle, PIN_Id pinId)
 {
-    //printf("Processing AD Data\n");
     GPIO_write(LED_RED_GPIO,1);
     AppCAPHISR(CHAR2data); /* Deal with it and provide a buffer to store data we got */
     GPIO_write(LED_RED_GPIO,0);
-    //printf("Interrupt!\n");
-
-//    if(AD5940_GetMCUIntFlag()){
-//          AD5940_ClrMCUIntFlag(); /* Clear this flag */
-//          temp[IntCount] = APPBUFF_SIZE;
-//          AppCHRONOAMPISR(AppBuff[IntCount], &temp[IntCount]); /* Deal with it and provide a buffer to store data we got */
-//                if(pAMPCfg->bMeasureTransient == bFALSE)
-//                {
-//                    AMPShowResult((float*)AppBuff[0], temp[0]);
-//                }
-//    }
-//    else{
-//     printf("No Flag\n");
-//    }
-
-
-
-       //AMPShowResult((float*)AppBuff[0], temp);
-
-        // Read battery
-        //g_BattRead++;   // dummy battery read
-
-        // Send data
-        //CustomPeripheral_enqueueMsg(CP_DATA_EVT,NULL); //handle interrupt
-        //CUSTOM_SetParameter(CHAR2_ID, CHAR2_LEN, NULL);
 }
 
 

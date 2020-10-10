@@ -1,6 +1,6 @@
 #
 # This file was generated based on the configuration script:
-#     C:\Github\HET2_Software\HET2_Launchpad\simple_peripheral_app.cfg
+#     C:\Github\AD5941-CC26x2_Launchpad\HET2_Launchpad\simple_peripheral_app.cfg
 #
 # This makefile may be included in other makefiles that need to build
 # the libraries containing the compiled source files generated as
@@ -14,7 +14,7 @@
 #
 # The absolute path to the generated source directory (at the time the
 # sources were generated) is:
-#    C:\Github\HET2_Software\HET2_Launchpad\src
+#    C:\Github\AD5941-CC26x2_Launchpad\HET2_Launchpad\src
 #
 GEN_SRC_DIR ?= ../src
 
