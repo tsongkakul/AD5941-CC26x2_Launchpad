@@ -223,7 +223,8 @@ AD5940Err AppCAPHCtrl(int32_t AmpCtrl, void *pPara)
 
         /* Configure Wakeup Timer*/
         wupt_cfg.WuptEn = bTRUE;
-        wupt_cfg.WuptEndSeq = WUPTENDSEQ_B; //loop after pH
+        wupt_cfg.WuptEndSeq = WUPTENDSEQ_A; //loop after pH
+//        wupt_cfg.WuptEndSeq = WUPTENDSEQ_B; //loop after pH
 
         //Add chronoamperometric measurement sequence to wakeup timer
         wupt_cfg.WuptOrder[0] = SEQID_0;
@@ -232,12 +233,12 @@ AD5940Err AppCAPHCtrl(int32_t AmpCtrl, void *pPara)
                 (uint32_t) (AppCAPHCfg.WuptClkFreq * AppCAPHCfg.AmpODR)
                         - 2 - 1;
 
-        //Add pH measurement sequence to wakeup timer
-        wupt_cfg.WuptOrder[1] = SEQID_2;
-        wupt_cfg.SeqxSleepTime[SEQID_2] = 1; /* The minimum value is 1. Do not set it to zero. Set it to 1 will spend 2 32kHz clock. */
-        wupt_cfg.SeqxWakeupTime[SEQID_2] =
-                (uint32_t) (AppCAPHCfg.WuptClkFreq * AppCAPHCfg.AmpODR)
-                        - 2 - 1;
+//        //Add pH measurement sequence to wakeup timer
+//        wupt_cfg.WuptOrder[1] = SEQID_2;
+//        wupt_cfg.SeqxSleepTime[SEQID_2] = 1; /* The minimum value is 1. Do not set it to zero. Set it to 1 will spend 2 32kHz clock. */
+//        wupt_cfg.SeqxWakeupTime[SEQID_2] =
+//                (uint32_t) (AppCAPHCfg.WuptClkFreq * AppCAPHCfg.AmpODR)
+//                        - 2 - 1;
 
         AD5940_WUPTCfg(&wupt_cfg);
 
@@ -530,7 +531,28 @@ static AD5940Err AppCASeqMeasureGen(void) //SEQ0
     AD5940_AFECtrlS(AFECTRL_ADCPWR | AFECTRL_ADCCNV, bFALSE); /* Stop ADC */
     AD5940_SEQGpioCtrlS(0);
 
-    AD5940_EnterSleepS();/* Goto hibernate */
+  //  AD5940_EnterSleepS();/* Goto hibernate */
+
+    // Set up mux to measure PH output
+        adc_base.ADCMuxP = ADCMUXP_AIN2;
+        adc_base.ADCMuxN = ADCMUXN_AIN1;
+        adc_base.ADCPga = AppCAPHCfg.ADCPgaGain; //make this user configurable
+        AD5940_ADCBaseCfgS(&adc_base);
+        // wait for mux to settle
+        AD5940_SEQGenInsert(SEQ_WAIT(16 * 250)); //check this duration
+        // AFE conversion
+        //AD5940_SEQGpioCtrlS(AGPIO_Pin1); //for debug, toggle GPIO1
+        AD5940_AFECtrlS(AFECTRL_ADCPWR | AFECTRL_SINC2NOTCH, bTRUE);
+        AD5940_SEQGenInsert(SEQ_WAIT(16 * 250));
+        AD5940_AFECtrlS(AFECTRL_ADCCNV, bTRUE); /* Start ADC convert and DFT */
+        AD5940_SEQGenInsert(SEQ_WAIT(WaitClks)); /* wait for first data ready */
+        AD5940_AFECtrlS(AFECTRL_ADCPWR | AFECTRL_ADCCNV, bFALSE); /* Stop ADC */
+        AD5940_SEQGpioCtrlS(0);
+
+        AD5940_EnterSleepS();/* Goto hibernate */
+
+
+
     /* Sequence end. */
     error = AD5940_SEQGenFetchSeq(&pSeqCmd, &SeqLen);
     AD5940_SEQGenCtrl(bFALSE); /* Stop sequencer generator */
@@ -681,15 +703,21 @@ static AD5940Err AppCAPHProcess(int32_t * const pData,
                                          uint32_t *pDataCount)
 {
     uint32_t i, datacount;
+    uint8_t keep_index = 0;
     datacount = *pDataCount;
     float *pOut = (float *) pData;
     for (i = 0; i < datacount; i++)
     {
         pData[i] &= 0xffff;
-        if(i%2)
-            pOut[i] = AppCAPHCalcVoltage(pData[i]);
-        else
-            pOut[i] = AppCAPHCalcCurrent(pData[i]);
+        // For each set of 3 measurements, CA is [0], pH is [2], [1] is garbage
+        if(i%3 == 0){
+            pOut[keep_index] = AppCAPHCalcCurrent(pData[i]);
+            keep_index++;
+        }
+        else if(i%3==2){
+            pOut[keep_index] = AppCAPHCalcVoltage(pData[i]);
+            keep_index++;
+        }
 
     }
     return 0;
