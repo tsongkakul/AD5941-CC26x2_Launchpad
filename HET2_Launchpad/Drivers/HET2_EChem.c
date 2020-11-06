@@ -7,7 +7,7 @@
 #include <Drivers/HET2_EChem.h>
 
 #define ECHEM_PERIOD 0.5
-#define ECHEM_SAMPLES 20
+#define ECHEM_SAMPLES 30
 
 static float LFOSCFreq;
 extern uint32_t IntCount;
