@@ -535,6 +535,22 @@ static AD5940Err AppCASeqMeasureGen(void) //SEQ0
 
     // Set up mux to measure PH output
         adc_base.ADCMuxP = ADCMUXP_AIN2;
+        adc_base.ADCMuxN = ADCMUXN_AIN3;
+        adc_base.ADCPga = AppCAPHCfg.ADCPgaGain; //make this user configurable
+        AD5940_ADCBaseCfgS(&adc_base);
+        // wait for mux to settle
+        AD5940_SEQGenInsert(SEQ_WAIT(16 * 250)); //check this duration
+        // AFE conversion
+        //AD5940_SEQGpioCtrlS(AGPIO_Pin1); //for debug, toggle GPIO1
+        AD5940_AFECtrlS(AFECTRL_ADCPWR | AFECTRL_SINC2NOTCH, bTRUE);
+        AD5940_SEQGenInsert(SEQ_WAIT(16 * 250));
+        AD5940_AFECtrlS(AFECTRL_ADCCNV, bTRUE); /* Start ADC convert and DFT */
+        AD5940_SEQGenInsert(SEQ_WAIT(WaitClks)); /* wait for first data ready */
+        AD5940_AFECtrlS(AFECTRL_ADCPWR | AFECTRL_ADCCNV, bFALSE); /* Stop ADC */
+        AD5940_SEQGpioCtrlS(0);
+
+        // Set up mux to measure Temperature output
+        adc_base.ADCMuxP = ADCMUXP_AIN0;
         adc_base.ADCMuxN = ADCMUXN_AIN1;
         adc_base.ADCPga = AppCAPHCfg.ADCPgaGain; //make this user configurable
         AD5940_ADCBaseCfgS(&adc_base);
@@ -709,16 +725,22 @@ static AD5940Err AppCAPHProcess(int32_t * const pData,
     for (i = 0; i < datacount; i++)
     {
         pData[i] &= 0xffff;
-        // For each set of 3 measurements, CA is [0], pH is [2], [1] is garbage
-        if(i%3 == 0){
+        // For each set of 5 measurements, CA is [0], pH is [2], temp is [4] [1] & [3] are garbage
+        if(i%5 == 0){
             pOut[keep_index] = AppCAPHCalcCurrent(pData[i]);
             keep_index++;
         }
-        else if(i%3==2){
+        else if(i%5==2){
             pOut[keep_index] = AppCAPHCalcVoltage(pData[i]);
             keep_index++;
         }
-
+        else if(i%5==4){
+            pOut[keep_index] = AppCAPHCalcVoltage(pData[i]);
+//#ifdef PRINTVALUES
+//printf("\n");
+//            #endif
+            keep_index++;
+        }
     }
     return 0;
 }

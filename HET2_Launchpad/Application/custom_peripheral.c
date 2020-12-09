@@ -305,6 +305,7 @@ bool            transferOK;
 uint32_t IntCount = 3;
 AD5940Err ADerror;
 uint32_t AppBuff[n][APPBUFF_SIZE];
+uint32_t ECHEMDATA[100];
 AppCHRONOAMPCfg_Type *pAMPCfg;
 uint32_t g_period = 0.5;
 
@@ -2613,7 +2614,8 @@ static void CustomPeripheral_performPeriodicTask(void)
 static void CustomPeripheral_INT_CB(PIN_Handle handle, PIN_Id pinId)
 {
     GPIO_write(LED_RED_GPIO,1);
-    AppCAPHISR(CHAR2data); /* Deal with it and provide a buffer to store data we got */
+//    AppCAPHISR(CHAR2data); /* Deal with it and provide a buffer to store data we got */
+    AppCAPHISR(ECHEMDATA); /* Deal with it and provide a buffer to store data we got */
     GPIO_write(LED_RED_GPIO,0);
 }
 
