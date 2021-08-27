@@ -2,7 +2,7 @@
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --board "/ti/boards/CC26X2R1_LAUNCHXL" --product "simplelink_cc13x2_26x2_sdk@3.40.00.02"
- * @versions {"data":"2020021217","timestamp":"2020021217","tool":"1.4.0+1234","templates":"2020021217"}
+ * @versions {"data":"2020052512","timestamp":"2020052512","tool":"1.5.0+1397","templates":"2020052512"}
  */
 
 /**
@@ -96,7 +96,6 @@ Display1.uart.$name                     = "CONFIG_DISPLAY_UART";
 Display1.uart.txPinInstance.outputState = "High";
 Display1.uart.txPinInstance.$name       = "CONFIG_PIN_UART_TX";
 Display1.uart.rxPinInstance.$name       = "CONFIG_PIN_UART_RX";
-Display1.uart.uart.$name                = "MyUART1";
 Display1.uart.uart.$assign              = "UART0";
 
 AESCCM1.$name = "CONFIG_AESCCM0";
@@ -121,7 +120,7 @@ GPIO2.pinInstance.$name = "CONFIG_PIN_BTN2";
 GPIO3.$name              = "AD_CS";
 GPIO3.mode               = "Output";
 GPIO3.initialOutputState = "High";
-GPIO3.gpioPin.$assign    = "boosterpack.18";
+GPIO3.gpioPin.$assign    = "boosterpack.30";
 GPIO3.pinInstance.$name  = "CONFIG_PIN_0";
 
 GPIO4.$name              = "AD_RST";
@@ -136,7 +135,6 @@ NVS1.internalFlash.regionBase = 0x48000;
 NVS1.internalFlash.regionSize = 0x4000;
 
 SPI1.$name                 = "CONFIG_SPI_0";
-SPI1.spi.$name             = "MySSI1";
 SPI1.spi.sclkPin.$assign   = "boosterpack.29";
 SPI1.spi.misoPin.$assign   = "boosterpack.9";
 SPI1.spi.mosiPin.$assign   = "boosterpack.10";
@@ -155,11 +153,11 @@ LED1.gpioPin.pinInstance.$name = "CONFIG_PIN_2";
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-Display1.uart.uart.txPin.$suggestSolution = "8";
-Display1.uart.uart.rxPin.$suggestSolution = "7";
-GPIO1.gpioPin.$suggestSolution            = "19";
-GPIO2.gpioPin.$suggestSolution            = "20";
+Display1.uart.uart.txPin.$suggestSolution = "boosterpack.4";
+Display1.uart.uart.rxPin.$suggestSolution = "boosterpack.3";
+GPIO1.gpioPin.$suggestSolution            = "boosterpack.13";
+GPIO2.gpioPin.$suggestSolution            = "boosterpack.12";
 SPI1.spi.$suggestSolution                 = "SSI0";
 SPI1.spi.dmaRxChannel.$suggestSolution    = "DMA_CH3";
 SPI1.spi.dmaTxChannel.$suggestSolution    = "DMA_CH4";
-LED1.gpioPin.gpioPin.$suggestSolution     = "11";
+LED1.gpioPin.gpioPin.$suggestSolution     = "boosterpack.39";
